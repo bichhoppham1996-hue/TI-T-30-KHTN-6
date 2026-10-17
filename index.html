@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Học Tập KHTN 6 - Cơ Quan & Hệ Cơ Quan</title>
+    <style>
+        :root {
+            --primary-blue: #2365CF;
+            --primary-pink: #E94291;
+            --text-main: #283C4F;
+            --text-sub: #61778A;
+            --bg-page: #EBF3FA;
+            --bg-card: #FFFFFF;
+            --border-neutral: #C9DCE6;
+            
+            --correct-bg: #DFF9E7;
+            --correct-border: #5AB579;
+            --wrong-bg: #FFE4EA;
+            --wrong-border: #EA7695;
+
+            --group1-bg: #ECFCF4; --group1-head: #BBF4D3;
+            --group2-bg: #FFF2F5; --group2-head: #FFCDD1;
+            --group3-bg: #F0E5FF; --group3-head: #D8BFFF;
+            --group4-bg: #FFF9DB; --group4-head: #FFE885;
+
+            --font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .worksheet-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(35, 101, 207, 0.08);
+            border: 1px solid var(--border-neutral);
+            margin-bottom: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed var(--border-neutral);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tag-subject {
+            background-color: #E2F0FF;
+            color: var(--primary-blue);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .main-title {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+            background: #F8FAFC;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-neutral);
+        }
+
+        .info-field {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .info-field input {
+            border: none;
+            border-bottom: 1px dashed var(--text-sub);
+            background: transparent;
+            outline: none;
+            width: 100px;
+            font-size: 13px;
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        /* Section Box */
+        .section-box {
+            background: #F9FBFD;
+            border: 1.5px solid var(--border-neutral);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Card Bank */
+        .card-bank {
+            background: #FFFFFF;
+            border: 1.5px dashed var(--border-neutral);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .bank-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .cards-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .drag-card {
+            background-color: #E2F0FF;
+            border: 1.5px solid var(--border-neutral);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .drag-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .drag-card.selected {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(35, 101, 207, 0.25);
+            background-color: #FFF0D7 !important;
+        }
+
+        /* Groups & Drop Zones */
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .group-box {
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .group-box.g1 { background-color: var(--group1-bg); }
+        .group-box.g2 { background-color: var(--group2-bg); }
+        .group-box.g3 { background-color: var(--group3-bg); }
+        .group-box.g4 { background-color: var(--group4-bg); }
+
+        .group-header {
+            text-align: center;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 6px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .g1 .group-header { background-color: var(--group1-head); }
+        .g2 .group-header { background-color: var(--group2-head); }
+        .g3 .group-header { background-color: var(--group3-head); }
+        .g4 .group-header { background-color: var(--group4-head); }
+
+        .drop-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slot-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slot-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sub);
+            width: 85px;
+        }
+
+        .drop-zone {
+            flex: 1;
+            min-height: 36px;
+            border: 1.5px dashed var(--border-neutral);
+            border-radius: 8px;
+            background: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .drop-zone.drag-over {
+            background-color: #E2F0FF;
+            border-color: var(--primary-blue);
+        }
+
+        .drag-card.correct {
+            background-color: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: #1E6B37;
+        }
+
+        .drag-card.wrong {
+            background-color: var(--wrong-bg) !important;
+            border-color: var(--wrong-border) !important;
+            color: #9E1F3B;
+        }
+
+        /* Plant Layout for Question 2 */
+        .plant-content-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 16px;
+            align-items: start;
+        }
+
+        .plant-image-box {
+            background: #FFF;
+            border: 1px solid var(--border-neutral);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .plant-image-box img {
+            width: 100%;
+            height: auto;
+            max-height: 320px;
+            object-fit: contain;
+        }
+
+        .qa-box {
+            background: #FFFFFF;
+            border: 1px solid var(--border-neutral);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .qa-title {
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 6px;
+        }
+
+        /* Input điền từ */
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--primary-blue);
+            background: #F0F7FF;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            outline: none;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .fill-input:focus {
+            background: #FFF8CB;
+            border-bottom-color: var(--primary-pink);
+        }
+
+        .fill-input.correct-input {
+            background-color: var(--correct-bg) !important;
+            border-bottom-color: var(--correct-border) !important;
+            color: #1E6B37 !important;
+        }
+
+        .fill-input.wrong-input {
+            background-color: var(--wrong-bg) !important;
+            border-bottom-color: var(--wrong-border) !important;
+            color: #9E1F3B !important;
+        }
+
+        /* Footer & Controls */
+        .footer {
+            border-top: 1.5px dashed var(--border-neutral);
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        .controls-panel {
+            width: 100%;
+            max-width: 900px;
+            background: #FFFFFF;
+            border-radius: 14px;
+            padding: 14px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-check { background-color: var(--primary-blue); color: white; }
+        .btn-reset { background-color: #E0E8F0; color: var(--text-main); }
+        .btn-answers { background-color: #F0E5FF; color: #6B21A8; }
+        .btn-shuffle { background-color: #FFF0D7; color: #9A5B00; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .worksheet-container { border: none; box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
+            .controls-panel { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="worksheet-container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <span class="tag-subject">KHOA HỌC TỰ NHIÊN 6</span>
+                <h1 class="main-title">PHIẾU HỌC TẬP: <span style="color: var(--primary-pink);">CƠ QUAN & HỆ CƠ QUAN</span></h1>
+            </div>
+            <div class="header-right">
+                <div class="info-field">
+                    <label>Họ tên:</label>
+                    <input type="text" placeholder="..............">
+                </div>
+                <div class="info-field">
+                    <label>Lớp:</label>
+                    <input type="text" placeholder="........">
+                </div>
+            </div>
+        </div>
+
+        <!-- CÂU 1: CƠ QUAN & CHỨC NĂNG Ở NGƯỜI -->
+        <div class="section-box">
+            <div class="section-title">📌 Câu 1: Hoàn thành bảng Cơ quan & Chức năng hệ cơ quan ở người</div>
+            
+            <div class="card-bank">
+                <div class="bank-title">📦 Ngân hàng thẻ (Kéo thả vào ô thích hợp)</div>
+                <div class="cards-grid" id="bank1"></div>
+            </div>
+
+            <div class="groups-grid" id="groups1"></div>
+        </div>
+
+        <!-- CÂU 2: CÂY LẠC -->
+        <div class="section-box">
+            <div class="section-title">🌱 Câu 2: Quan sát hình ảnh cây lạc và thực hiện các yêu cầu</div>
+            
+            <div class="plant-content-layout">
+                <!-- Hình ảnh cây lạc có đánh số 1-6 -->
+                <div class="plant-image-box">
+                    <img src="http://googleusercontent.com/image_generation_content/5" alt="Cây lạc đánh số vị trí 1-6">
+                </div>
+
+                <div>
+                    <!-- a. Kéo thả chú thích 1-6 -->
+                    <div class="card-bank">
+                        <div class="bank-title">a. Kéo thẻ tên cơ quan tương ứng vào vị trí (1) đến (6)</div>
+                        <div class="cards-grid" id="bank2"></div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px;" id="groups2"></div>
+
+                    <!-- b & c: Điền vào chỗ trống -->
+                    <div class="qa-box">
+                        <div class="qa-title">b) Điền các cơ quan vào đúng hệ cơ quan của cây lạc:</div>
+                        <p>• <b>Hệ rễ:</b> <input type="text" class="fill-input" id="fill_b1" style="width: 120px;" placeholder="..........." data-ans="rễ"></p>
+                        <p>• <b>Hệ chồi:</b> <input type="text" class="fill-input" id="fill_b2" style="width: 200px;" placeholder="........................................" data-ans="thân, lá, hoa, quả, hạt"></p>
+                    </div>
+
+                    <div class="qa-box">
+                        <div class="qa-title">c) Em hãy điền từ hoặc cụm từ thích hợp vào chỗ trống:</div>
+                        <p style="line-height: 2;">
+                            Theo cách gọi dân gian, người ta thường gọi là “củ lạc”. Tuy nhiên, về mặt khoa học, gọi là <b>(1)</b> <input type="text" class="fill-input" id="fill_c1" style="width: 100px;" placeholder="............" data-ans="quả lạc"> mới chính xác. Thực chất, nó được hình thành từ <b>(2)</b> <input type="text" class="fill-input" id="fill_c2" style="width: 80px;" placeholder="........" data-ans="hoa"> biến đổi thành, nhưng do nằm <b>(3)</b> <input type="text" class="fill-input" id="fill_c3" style="width: 130px;" placeholder=".................." data-ans="dưới mặt đất"> nên dễ bị nhầm là củ.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span>Chương trình GDPT 2018 - Môn KHTN 6</span>
+            <span id="scoreDisplay" style="color: var(--primary-blue); font-weight: 800;">Điểm: -- / 19</span>
+            <span>✨ Pastel Edu Worksheet</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-panel">
+        <span id="progressText" style="font-weight: 700; font-size: 13px;">Đã xếp: 0/14 thẻ | Đã điền: 0/5 ô</span>
+        <div id="feedbackMsg" style="font-weight: 700; font-size: 13px;"></div>
+        <div class="buttons-row">
+            <button class="btn btn-check" onclick="checkAnswers()">✔ Kiểm tra</button>
+            <button class="btn btn-reset" onclick="resetWorksheet()">🔄 Làm lại</button>
+            <button class="btn btn-answers" onclick="showAnswers()">💡 Xem đáp án</button>
+            <button class="btn btn-shuffle" onclick="shuffleCards()">🔀 Trộn thẻ</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Câu 1
+        const GROUPS_1 = [
+            { id: "g1", title: "🫀 HỆ TUẦN HOÀN", css: "g1" },
+            { id: "g2", title: "🧠 HỆ THẦN KINH", css: "g2" },
+            { id: "g3", title: "🫁 HỆ HÔ HẤP", css: "g3" },
+            { id: "g4", title: "🩺 HỆ BÀI TIẾT", css: "g4" }
+        ];
+
+        const ITEMS_1 = [
+            { id: "c1", text: "Tim, mạch máu", group: "g1", slot: "Cơ quan" },
+            { id: "c2", text: "Vận chuyển chất & O₂", group: "g1", slot: "Chức năng" },
+            { id: "c3", text: "Não, tủy, dây thần kinh", group: "g2", slot: "Cơ quan" },
+            { id: "c4", text: "Điều hòa hoạt động cơ thể", group: "g2", slot: "Chức năng" },
+            { id: "c5", text: "Mũi, khí quản, phổi", group: "g3", slot: "Cơ quan" },
+            { id: "c6", text: "Trao đổi khí O₂ và CO₂", group: "g3", slot: "Chức năng" },
+            { id: "c7", text: "Thận, bóng đái, ống dẫn", group: "g4", slot: "Cơ quan" },
+            { id: "c8", text: "Lọc & thải chất độc hại", group: "g4", slot: "Chức năng" }
+        ];
+
+        // Data Câu 2a
+        const GROUPS_2 = [
+            { id: "p1", title: "Vị trí (1)", label: "Số 1" },
+            { id: "p2", title: "Vị trí (2)", label: "Số 2" },
+            { id: "p3", title: "Vị trí (3)", label: "Số 3" },
+            { id: "p4", title: "Vị trí (4)", label: "Số 4" },
+            { id: "p5", title: "Vị trí (5)", label: "Số 5" },
+            { id: "p6", title: "Vị trí (6)", label: "Số 6" }
+        ];
+
+        const ITEMS_2 = [
+            { id: "p_card1", text: "(1) Rễ", group: "p1" },
+            { id: "p_card2", text: "(2) Thân", group: "p2" },
+            { id: "p_card3", text: "(3) Lá", group: "p3" },
+            { id: "p_card4", text: "(4) Hoa", group: "p4" },
+            { id: "p_card5", text: "(5) Củ (Quả)", group: "p5" },
+            { id: "p_card6", text: "(6) Hạt", group: "p6" }
+        ];
+
+        let selected = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initQuestion1();
+            initQuestion2();
+            updateProgress();
+
+            document.querySelectorAll(".fill-input").forEach(inp => {
+                inp.addEventListener("input", updateProgress);
+            });
+        });
+
+        function initQuestion1() {
+            const gContainer = document.getElementById("groups1");
+            gContainer.innerHTML = "";
+            GROUPS_1.forEach(g => {
+                gContainer.innerHTML += `
+                    <div class="group-box ${g.css}">
+                        <div class="group-header">${g.title}</div>
+                        <div class="drop-slots">
+                            <div class="slot-row">
+                                <span class="slot-label">1. Cơ quan:</span>
+                                <div class="drop-zone" data-group="${g.id}" data-slot="Cơ quan" ondragover="event.preventDefault()" ondrop="handleDrop(event)" onclick="handleZoneClick(this)"></div>
+                            </div>
+                            <div class="slot-row">
+                                <span class="slot-label">2. Chức năng:</span>
+                                <div class="drop-zone" data-group="${g.id}" data-slot="Chức năng" ondragover="event.preventDefault()" ondrop="handleDrop(event)" onclick="handleZoneClick(this)"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            renderBank("bank1", ITEMS_1);
+        }
+
+        function initQuestion2() {
+            const gContainer = document.getElementById("groups2");
+            gContainer.innerHTML = "";
+            GROUPS_2.forEach(g => {
+                gContainer.innerHTML += `
+                    <div class="slot-row" style="background: #FFF; padding: 4px; border-radius: 8px; border: 1px solid var(--border-neutral);">
+                        <span class="slot-label" style="width: 60px;">${g.label}:</span>
+                        <div class="drop-zone" data-group="${g.id}" ondragover="event.preventDefault()" ondrop="handleDrop(event)" onclick="handleZoneClick(this)"></div>
+                    </div>
+                `;
+            });
+
+            renderBank("bank2", ITEMS_2);
+        }
+
+        function renderBank(bankId, items) {
+            const bContainer = document.getElementById(bankId);
+            bContainer.innerHTML = "";
+            items.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "drag-card";
+                card.draggable = true;
+                card.id = item.id;
+                card.textContent = item.text;
+                card.dataset.group = item.group;
+                if (item.slot) card.dataset.slot = item.slot;
+
+                card.addEventListener("dragstart", (e) => {
+                    e.dataTransfer.setData("text", e.target.id);
+                    selected = null;
+                });
+
+                card.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    if (selected === card) {
+                        card.classList.remove("selected");
+                        selected = null;
+                    } else {
+                        document.querySelectorAll(".drag-card").forEach(c => c.classList.remove("selected"));
+                        selected = card;
+                        card.classList.add("selected");
+                    }
+                });
+
+                bContainer.appendChild(card);
+            });
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const cardId = e.dataTransfer.getData("text");
+            const card = document.getElementById(cardId);
+            if (card) moveCard(card, e.currentTarget);
+        }
+
+        function handleZoneClick(zone) {
+            if (selected) {
+                moveCard(selected, zone);
+                selected.classList.remove("selected");
+                selected = null;
+            }
+        }
+
+        function moveCard(card, zone) {
+            if (zone.children.length > 0) {
+                const oldCard = zone.children[0];
+                const bankId = ITEMS_1.some(i => i.id === oldCard.id) ? "bank1" : "bank2";
+                document.getElementById(bankId).appendChild(oldCard);
+                oldCard.classList.remove("correct", "wrong");
+            }
+            zone.appendChild(card);
+            card.classList.remove("correct", "wrong");
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const placed = document.querySelectorAll(".drop-zone .drag-card").length;
+            const totalCards = ITEMS_1.length + ITEMS_2.length;
+            const filledInputs = Array.from(document.querySelectorAll(".fill-input")).filter(i => i.value.trim() !== "").length;
+            
+            document.getElementById("progressText").textContent = `Đã xếp: ${placed}/${totalCards} thẻ | Đã điền: ${filledInputs}/5 ô`;
+        }
+
+        function cleanText(str) {
+            return str.toLowerCase().trim().replace(/\s+/g, ' ');
+        }
+
+        function checkAnswers() {
+            let correctCount = 0;
+            const totalCards = ITEMS_1.length + ITEMS_2.length;
+            const inputs = document.querySelectorAll(".fill-input");
+
+            // Check drag cards
+            document.querySelectorAll(".drop-zone").forEach(zone => {
+                if (zone.children.length > 0) {
+                    const card = zone.children[0];
+                    const isGroupMatch = zone.dataset.group === card.dataset.group;
+                    const isSlotMatch = !zone.dataset.slot || zone.dataset.slot === card.dataset.slot;
+
+                    if (isGroupMatch && isSlotMatch) {
+                        card.classList.add("correct");
+                        card.classList.remove("wrong");
+                        correctCount++;
+                    } else {
+                        card.classList.add("wrong");
+                        card.classList.remove("correct");
+                    }
+                }
+            });
+
+            // Check fill inputs
+            inputs.forEach(inp => {
+                const userVal = cleanText(inp.value);
+                const targetAns = cleanText(inp.dataset.ans);
+
+                if (userVal !== "" && (targetAns.includes(userVal) || userVal.includes(targetAns) || isSimilarText(userVal, targetAns))) {
+                    inp.classList.add("correct-input");
+                    inp.classList.remove("wrong-input");
+                    correctCount++;
+                } else {
+                    inp.classList.add("wrong-input");
+                    inp.classList.remove("correct-input");
+                }
+            });
+
+            const totalScore = totalCards + inputs.length;
+            document.getElementById("scoreDisplay").textContent = `Điểm: ${correctCount} / ${totalScore}`;
+            const msg = document.getElementById("feedbackMsg");
+            if (correctCount === totalScore) {
+                msg.textContent = "🎉 Tuyệt vời! Em đã kéo thả và điền từ chính xác 100%!";
+                msg.style.color = "#1E6B37";
+            } else {
+                msg.textContent = `Đúng ${correctCount}/${totalScore} ý. Hãy kiểm tra các ô màu hồng nhé!`;
+                msg.style.color = "#EA7695";
+            }
+        }
+
+        function isSimilarText(user, target) {
+            if (target === "thân, lá, hoa, quả, hạt") {
+                return user.includes("thân") && user.includes("lá") && user.includes("hoa");
+            }
+            if (target === "quả lạc") {
+                return user === "quả lạc" || user === "quả";
+            }
+            if (target === "hoa") {
+                return user === "hoa";
+            }
+            if (target === "dưới mặt đất") {
+                return user.includes("dưới mặt đất") || user.includes("dưới đất");
+            }
+            return false;
+        }
+
+        function resetWorksheet() {
+            document.querySelectorAll(".drag-card").forEach(card => {
+                card.classList.remove("correct", "wrong", "selected");
+                const bankId = ITEMS_1.some(i => i.id === card.id) ? "bank1" : "bank2";
+                document.getElementById(bankId).appendChild(card);
+            });
+
+            document.querySelectorAll(".fill-input").forEach(inp => {
+                inp.value = "";
+                inp.classList.remove("correct-input", "wrong-input");
+            });
+
+            selected = null;
+            const totalScore = ITEMS_1.length + ITEMS_2.length + 5;
+            document.getElementById("scoreDisplay").textContent = `Điểm: -- / ${totalScore}`;
+            document.getElementById("feedbackMsg").textContent = "";
+            updateProgress();
+        }
+
+        function showAnswers() {
+            resetWorksheet();
+
+            // Show drag answers
+            document.querySelectorAll(".drop-zone").forEach(zone => {
+                const gId = zone.dataset.group;
+                const slot = zone.dataset.slot;
+                const bankId = zone.closest(".section-box").querySelector("#bank1, #bank2").id;
+                
+                const match = Array.from(document.querySelectorAll(`#${bankId} .drag-card`))
+                    .find(c => c.dataset.group === gId && (!slot || c.dataset.slot === slot));
+
+                if (match) {
+                    zone.appendChild(match);
+                    match.classList.add("correct");
+                }
+            });
+
+            // Show input answers
+            document.querySelectorAll(".fill-input").forEach(inp => {
+                inp.value = inp.dataset.ans;
+                inp.classList.add("correct-input");
+            });
+
+            const totalScore = ITEMS_1.length + ITEMS_2.length + 5;
+            document.getElementById("scoreDisplay").textContent = `Điểm: ${totalScore} / ${totalScore}`;
+            document.getElementById("feedbackMsg").textContent = "💡 Đã hiển thị toàn bộ đáp án!";
+            document.getElementById("feedbackMsg").style.color = "var(--primary-blue)";
+            updateProgress();
+        }
+
+        function shuffleCards() {
+            ["bank1", "bank2"].forEach(bId => {
+                const b = document.getElementById(bId);
+                const cards = Array.from(b.children);
+                cards.sort(() => Math.random() - 0.5).forEach(c => b.appendChild(c));
+            });
+        }
+    </script>
+</body>
+</html>
